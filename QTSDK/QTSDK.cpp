@@ -8,8 +8,9 @@
 
 int main()
 {
-    std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
-    std::string mystring = "C:\\Users\\cagef\\projects\\_QT\\resolve_51.mov";
+    std::string mystring = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
+    std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
+    std::string mystring2 = "C:\\Users\\cagef\\projects\\_QT\\resolve_51.mov";
     OSErr initerr = InitializeQTML(0L);
     OSErr entererr = EnterMovies();
 
@@ -24,35 +25,17 @@ int main()
     OSErr datareferr = QTNewDataReferenceFromFullPathCFString(inPath, kQTWindowsPathStyle, 0, &myHandle, &myDataRefType);
     OSErr newmovieerr = NewMovieFromDataRef(&myMovie, 0, &myResID, myHandle, myDataRefType);
 
+	//AudioChannelLayout* layout = nil;
+	//ByteCount layoutsize;
+	//ByteCount layoutsizeused;
+	//UInt32 outprop;
+	//QTPropertyValueType proptype;
+ //   QTAtomContainer propcon = nil;
 
-    long trackcount = GetMovieTrackCount(myMovie);
-	Track firsttrack = GetMovieTrack(myMovie, 3);
-    long trackcount2 = GetMovieTrackCount(myMovie);
-    AudioChannelLayout* layout = nil;
-    UInt32 layoutsize;
-    UInt32 layoutsizeused;
-    QTPropertyValueType proptype;
+ //   OSErr propatomerr = GetMoviePropertyAtom(myMovie, &propcon);
 
+ 
 
-    OSErr gettrackinfoerr = QTGetTrackPropertyInfo(firsttrack, kQTPropertyClass_Audio,
-        kQTAudioPropertyID_ChannelLayout, &proptype, &layoutsize, nil);
-    
-    layout = (AudioChannelLayout*)malloc(layoutsize);
-
-    OSErr gettrackproperr = QTGetTrackProperty(firsttrack, kQTPropertyClass_Audio,
-        kQTAudioPropertyID_ChannelLayout, layoutsize, &layout, &layoutsizeused);
-
-    firsttrack;
-
-
-    std::cout << 'test';
-
-
-
-
-
-
-        
  //   // Extraction Technique -------
 
  //   MovieAudioExtractionRef extractionSessionRef = nil;
@@ -83,6 +66,34 @@ int main()
  //   OSStatus extractlayouterr = MovieAudioExtractionGetProperty(extractionSessionRef,
 	//	kQTPropertyClass_MovieAudioExtraction_Audio,
 	//	kQTMovieAudioExtractionAudioPropertyID_AudioChannelLayout,
-	//	size, layout, nil);
+	//	size, layout, nil);  
+    
+    
+    
+    
+    
+    
+     //Track Technique ------
+
+    long trackcount = GetMovieTrackCount(myMovie);
+    Track firsttrack = GetMovieTrack(myMovie, 3);
+    AudioChannelLayout* layout;
+    unsigned long layoutsize;
+    unsigned long layoutsizeused;
+    //UInt32 outprop;
+    //QTPropertyValueType proptype;
+
+
+    OSErr gettrackinfoerr = QTGetTrackPropertyInfo(firsttrack, kQTPropertyClass_Audio,
+        kQTAudioPropertyID_ChannelLayout, nil, &layoutsize, nil);
+
+    layout = (AudioChannelLayout*)malloc(layoutsize);
+
+    unsigned long size = 32;
+
+    OSErr gettrackproperr = QTGetTrackProperty(firsttrack, kQTPropertyClass_Audio,
+        kQTAudioPropertyID_ChannelLayout, layoutsize, &layout, &layoutsizeused);
+
+    std::cout << "test" << std::endl;
 
 }
