@@ -3,11 +3,13 @@
 #include <iostream>
 #include <Movies.h>
 #include <QTML.h>
+#include <CoreAudioTypes.h>
 
 
 int main()
 {
-    std::string mystring = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
+    std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
+    std::string mystring = "C:\\Users\\cagef\\projects\\_QT\\resolve_OG.mov";
     OSErr initerr = InitializeQTML(0L);
     OSErr entererr = EnterMovies();
 
@@ -21,5 +23,13 @@ int main()
 
     OSErr datareferr = QTNewDataReferenceFromFullPathCFString(inPath, kQTWindowsPathStyle, 0, &myHandle, &myDataRefType);
     OSErr newmovieerr = NewMovieFromDataRef(&myMovie, 0, &myResID, myHandle, myDataRefType);
+
+    OSStatus                extracterr = noErr;
+    MovieAudioExtractionRef extractionSessionRef = nil;
+    SoundDescriptionHandle mySound = nil;
+
+    extracterr = MovieAudioExtractionBegin(myMovie, 0, &extractionSessionRef);
+
+    
 
 }
