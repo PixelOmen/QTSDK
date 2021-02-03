@@ -11,9 +11,9 @@ int main()
     OSErr initerr = InitializeQTML(0L);
     OSErr entererr = EnterMovies();
 
-    std::string mystring = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
+    std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
     std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
-    std::string mystring2 = "C:\\Users\\cagef\\projects\\_QT\\resolve_51.mov";
+    std::string mystring = "C:\\Users\\cagef\\projects\\_testfiles\\resolve_OG.mov";
 
     Movie myMovie;
     short myResID;
@@ -56,17 +56,24 @@ int main()
 
     //kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout
 
+	Track firsttrack = GetMovieTrack(myMovie, 3);
     QTPropertyValueType propValue;
     ByteCount propSize;
     AudioChannelLayout leftLayout = { kAudioChannelLayoutTag_UseChannelDescriptions,
-    NULL, 6, {kAudioChannelLabel_Left, NULL, NULL}};
+    NULL, 1, {kAudioChannelLabel_Left, NULL, NULL}};
     ByteCount leftLayoutSize = sizeof(leftLayout);
 
-	Track firsttrack = GetMovieTrack(myMovie, 3);
+    //OSErr getinfoerr = QTGetTrackPropertyInfo(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
+    //    &propValue, &propSize, 0);
 
-    OSErr getinfoerr = QTGetTrackPropertyInfo(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout, &propValue, &propSize, 0);
+    //AudioChannelLayout layoutFromTrack;
+    //OSErr getproperr = QTGetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
+    //    propSize, &layoutFromTrack, 0);
 
-    OSErr settrackerr = QTSetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout, leftLayoutSize, &leftLayout);
+    OSErr settrackerr = QTSetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
+        leftLayoutSize, &leftLayout);
+
+    Boolean hasChanged = HasMovieChanged(myMovie);
 
 
     std::cout << "test" << std::endl;
