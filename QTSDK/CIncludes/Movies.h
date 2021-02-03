@@ -352,7 +352,8 @@ typedef FourCharCode                    QTSoundDescriptionKind;
  *  Summary:
  *    QTSoundDescriptionCreate creates a SoundDescription of the
  *    requested kind from an AudioStreamBasicDescription, optional
- *    AudioChannelLayout, and optional magic cookie. 
+ *    
+ , and optional magic cookie. 
  *    QTSoundDescriptionCreate allocates the returned
  *    SoundDescriptionHandle, and the caller is responsible for
  *    disposing it.

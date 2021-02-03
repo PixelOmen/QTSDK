@@ -11,9 +11,9 @@ int main()
     OSErr initerr = InitializeQTML(0L);
     OSErr entererr = EnterMovies();
 
-    std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
-    std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
-    std::string mystring = "C:\\Users\\cagef\\projects\\_QT\\resolve_51.mov";
+    std::string mystring = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
+    std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
+    std::string mystring2 = "C:\\Users\\cagef\\projects\\_QT\\resolve_51.mov";
 
     Movie myMovie;
     short myResID;
@@ -30,6 +30,7 @@ int main()
 	MovieAudioExtractionRef extractionSessionRef = nil;
 	SoundDescriptionHandle mySound = nil;
 	AudioStreamBasicDescription asbd;
+
 
    AudioChannelDescription myDescriptions[6];
     myDescriptions[0] = {kAudioChannelLabel_Left, NULL, NULL};
@@ -53,17 +54,39 @@ int main()
     OSErr datareferr = QTNewDataReferenceFromFullPathCFString(inPath, kQTWindowsPathStyle, 0, &myHandle, &myDataRefType);
     OSErr newmovieerr = NewMovieFromDataRef(&myMovie, 0, &myResID, myHandle, myDataRefType);
 
-	OSStatus extracterr = MovieAudioExtractionBegin(myMovie, 0, &extractionSessionRef);
-	OSStatus extractasbderr = MovieAudioExtractionGetProperty(extractionSessionRef,
-		kQTPropertyClass_MovieAudioExtraction_Audio,
-		kQTMovieAudioExtractionAudioPropertyID_AudioStreamBasicDescription,
-		sizeof(asbd), &asbd, nil);
-    
-    OSStatus sdcreateerr = QTSoundDescriptionCreate(&asbd, &mylayout, layoutsize, NULL, 0, FOUR_CHAR_CODE('mvv2'), &mySD);
+    //kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout
+
+    QTPropertyValueType propValue;
+    ByteCount propSize;
+    AudioChannelLayout leftLayout = { kAudioChannelLayoutTag_UseChannelDescriptions,
+    NULL, 6, {kAudioChannelLabel_Left, NULL, NULL}};
+    ByteCount leftLayoutSize = sizeof(leftLayout);
+
+	Track firsttrack = GetMovieTrack(myMovie, 3);
+
+    OSErr getinfoerr = QTGetTrackPropertyInfo(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout, &propValue, &propSize, 0);
+
+    OSErr settrackerr = QTSetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout, leftLayoutSize, &leftLayout);
 
 
-	std::cout << "test" << std::endl;
+    std::cout << "test" << std::endl;
+
+
     
+    
+    // Sound Description Technique
+
+	//OSStatus extracterr = MovieAudioExtractionBegin(myMovie, 0, &extractionSessionRef);
+	//OSStatus extractasbderr = MovieAudioExtractionGetProperty(extractionSessionRef,
+	//	kQTPropertyClass_MovieAudioExtraction_Audio,
+	//	kQTMovieAudioExtractionAudioPropertyID_AudioStreamBasicDescription,
+	//	sizeof(asbd), &asbd, nil);
+ //   
+ //   OSStatus sdcreateerr = QTSoundDescriptionCreate(&asbd, &mylayout, layoutsize, NULL, 0, FOUR_CHAR_CODE('mvv2'), &mySD);
+
+
+	//std::cout << "test" << std::endl;
+ //   
 
 
     
