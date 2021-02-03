@@ -8,23 +8,18 @@
 
 int main()
 {
-    std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
-    std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
-    std::string mystring = "C:\\Users\\cagef\\projects\\_QT\\resolve_51.mov";
     OSErr initerr = InitializeQTML(0L);
     OSErr entererr = EnterMovies();
 
-    CFStringRef inPath = CFStringCreateWithCString(CFAllocatorGetDefault(), mystring.c_str(), CFStringGetSystemEncoding());    
+    std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
+    std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
+    std::string mystring = "C:\\Users\\cagef\\projects\\_QT\\resolve_51.mov";
 
     Movie myMovie;
     short myResID;
     Size mySize = (Size)strlen(mystring.c_str()) + 1;
     Handle myHandle = NewHandle(mySize);
     OSType myDataRefType = NULL;
-
-    OSErr datareferr = QTNewDataReferenceFromFullPathCFString(inPath, kQTWindowsPathStyle, 0, &myHandle, &myDataRefType);
-    OSErr newmovieerr = NewMovieFromDataRef(&myMovie, 0, &myResID, myHandle, myDataRefType);
-
 	AudioChannelLayout* layout = nil;
 	ByteCount layoutsize;
 	ByteCount layoutsizeused;
@@ -32,17 +27,9 @@ int main()
 	QTPropertyValueType proptype;
 	UInt32 size = 0;
     SoundDescriptionHandle mySD;
-
 	MovieAudioExtractionRef extractionSessionRef = nil;
 	SoundDescriptionHandle mySound = nil;
 	AudioStreamBasicDescription asbd;
-
-	OSStatus extracterr = MovieAudioExtractionBegin(myMovie, 0, &extractionSessionRef);
-
-	OSStatus extractasbderr = MovieAudioExtractionGetProperty(extractionSessionRef,
-		kQTPropertyClass_MovieAudioExtraction_Audio,
-		kQTMovieAudioExtractionAudioPropertyID_AudioStreamBasicDescription,
-		sizeof(asbd), &asbd, nil);
 
    AudioChannelDescription myDescriptions[6];
     myDescriptions[0] = {kAudioChannelLabel_Left, NULL, NULL};
@@ -53,7 +40,6 @@ int main()
     myDescriptions[5] = {kAudioChannelLabel_RightSurround, NULL, NULL};
 
     const int sizeofmyDesc = sizeof(myDescriptions) / sizeof(AudioChannelDescription);
-
     AudioChannelLayout mylayout = {kAudioChannelLayoutTag_UseChannelDescriptions,
         NULL, 6, NULL};
 
@@ -61,13 +47,23 @@ int main()
     {
         mylayout.mChannelDescriptions[i] = myDescriptions[i];
     }
-
     layoutsize = sizeof(mylayout);
+
+    CFStringRef inPath = CFStringCreateWithCString(CFAllocatorGetDefault(), mystring.c_str(), CFStringGetSystemEncoding());    
+    OSErr datareferr = QTNewDataReferenceFromFullPathCFString(inPath, kQTWindowsPathStyle, 0, &myHandle, &myDataRefType);
+    OSErr newmovieerr = NewMovieFromDataRef(&myMovie, 0, &myResID, myHandle, myDataRefType);
+
+	OSStatus extracterr = MovieAudioExtractionBegin(myMovie, 0, &extractionSessionRef);
+	OSStatus extractasbderr = MovieAudioExtractionGetProperty(extractionSessionRef,
+		kQTPropertyClass_MovieAudioExtraction_Audio,
+		kQTMovieAudioExtractionAudioPropertyID_AudioStreamBasicDescription,
+		sizeof(asbd), &asbd, nil);
     
-    OSStatus sdcreateerr = QTSoundDescriptionCreate(&asbd, &mylayout, layoutsize, nil, nil, FOUR_CHAR_CODE('mvv2'), &mySD);
+    OSStatus sdcreateerr = QTSoundDescriptionCreate(&asbd, &mylayout, layoutsize, NULL, 0, FOUR_CHAR_CODE('mvv2'), &mySD);
 
 
 	std::cout << "test" << std::endl;
+    
 
 
     
