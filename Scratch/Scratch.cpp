@@ -1,18 +1,38 @@
 #include <iostream>
 #include <array>
+#include <map>
 
-struct mystruct
+typedef std::map<std::string, int> errorDict;
+typedef int error;
+
+errorDict initQT()
 {
-    int myarray[3];
-};
+    errorDict returnDict{ {"first", 0}, {"second", 1} };
+    return returnDict;
+}
+
+error pullFromDict(errorDict *dict, std::string *value, std::string *answer)
+{
+    if (dict->find(*value) == dict->end())
+    {
+        answer = nullptr;
+        return 1;
+    }
+    else
+    {
+        *answer = (*dict)[*value];
+        return 0;
+    }
+}
+
 
 int main()
 {
-    int newlist[3] = { 10, 20, 30 };
-    mystruct test;
-    int mysize = sizeof(newlist) / sizeof(int);
-    for (int i = 0; i < mysize; i++)
-    {
-        test.myarray[i] = newlist[i];
-    }
+    errorDict returnvalues = initQT();
+
+    std::string answer;
+    error dicterr = pullFromDict(&returnvalues, (std::string*)"test", &answer);
+
+
+
 }
