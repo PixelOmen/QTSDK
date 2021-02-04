@@ -1,4 +1,4 @@
-// QTSDK.cpp : This file contains the 'main' function. Program execution begins and ends there.
+
 
 #include <iostream>
 #include <Movies.h>
@@ -14,9 +14,9 @@ int main()
     std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
     std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
     std::string mystring = "C:\\Users\\cagef\\projects\\_testfiles\\resolve_OG.mov";
+    const char* mystringchar = "C:\\Users\\cagef\\projects\\_testfiles\\resolve_OG.mov";
 
     Movie myMovie;
-    short myResID;
     Size mySize = (Size)strlen(mystring.c_str()) + 1;
     Handle myHandle = NewHandle(mySize);
     OSType myDataRefType = NULL;
@@ -50,18 +50,49 @@ int main()
     }
     layoutsize = sizeof(mylayout);
 
-    CFStringRef inPath = CFStringCreateWithCString(CFAllocatorGetDefault(), mystring.c_str(), CFStringGetSystemEncoding());    
-    OSErr datareferr = QTNewDataReferenceFromFullPathCFString(inPath, kQTWindowsPathStyle, 0, &myHandle, &myDataRefType);
-    OSErr newmovieerr = NewMovieFromDataRef(&myMovie, 0, &myResID, myHandle, myDataRefType);
+    //CFStringRef inPath = CFStringCreateWithCString(CFAllocatorGetDefault(), mystring.c_str(), CFStringGetSystemEncoding());    
+    //OSErr datareferr = QTNewDataReferenceFromFullPathCFString(inPath, kQTWindowsPathStyle, 0, &myHandle, &myDataRefType);
+    //OSErr newmovieerr = NewMovieFromDataRef(&myMovie, 0, &myResID, myHandle, myDataRefType);
+
+    FSSpec myFileSpec;
+    short myRefNum;
+    short myResID;
+    const char* stringName = "MyFileName";
+    StringPtr myStringPtr = (StringPtr)stringName;
+    Boolean wasChanged;
+
+    OSErr pathtospecerr = NativePathNameToFSSpec((char*)mystringchar, &myFileSpec, 0);
+    const FSSpec* myFSptr = &myFileSpec;
+    OSErr openerr = OpenMovieFile(myFSptr, &myRefNum, 0);
+    OSErr newmovieerr = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
+
 
     //kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout
 
-	Track firsttrack = GetMovieTrack(myMovie, 3);
+	Track firsttrack = GetMovieTrack(myMovie, 2);
     QTPropertyValueType propValue;
     ByteCount propSize;
     AudioChannelLayout leftLayout = { kAudioChannelLayoutTag_UseChannelDescriptions,
     NULL, 1, {kAudioChannelLabel_Left, NULL, NULL}};
     ByteCount leftLayoutSize = sizeof(leftLayout);
+
+
+    OSErr settrackerr = QTSetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
+        leftLayoutSize, &leftLayout);
+
+    //Boolean hasChanged = HasMovieChanged(myMovie);
+
+
+    OSErr updateerr = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"test.mov");
+
+    OSErr closeerr = CloseMovieFile(myRefNum);
+
+
+    std::cout << "test" << std::endl;
+
+
+
+    // Get Track Property Testing ----
 
     //OSErr getinfoerr = QTGetTrackPropertyInfo(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
     //    &propValue, &propSize, 0);
@@ -70,18 +101,9 @@ int main()
     //OSErr getproperr = QTGetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
     //    propSize, &layoutFromTrack, 0);
 
-    OSErr settrackerr = QTSetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
-        leftLayoutSize, &leftLayout);
-
-    Boolean hasChanged = HasMovieChanged(myMovie);
-
-
-    std::cout << "test" << std::endl;
-
-
     
     
-    // Sound Description Technique
+    // Sound Description Technique ----
 
 	//OSStatus extracterr = MovieAudioExtractionBegin(myMovie, 0, &extractionSessionRef);
 	//OSStatus extractasbderr = MovieAudioExtractionGetProperty(extractionSessionRef,
