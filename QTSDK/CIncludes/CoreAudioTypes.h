@@ -768,7 +768,7 @@ struct AudioChannelLayout
     AudioChannelLayoutTag       mChannelLayoutTag;
     UInt32                      mChannelBitmap;
     UInt32                      mNumberChannelDescriptions;
-    AudioChannelDescription     mChannelDescriptions[6];
+    AudioChannelDescription     mChannelDescriptions[kVariableLengthArray];
 };
 typedef struct AudioChannelLayout AudioChannelLayout;
 

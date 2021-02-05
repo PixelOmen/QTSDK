@@ -1,78 +1,91 @@
 #include <iostream>
+#include <map>
 #include <Movies.h>
 #include <QTML.h>
 #include <CoreAudioTypes.h>
 
-void initQT()
-{
+typedef std::map<std::string, OSErr> errorDict;
 
+template<typename T>
+void print(T toprint)
+{
+    std::cout << toprint << std::endl;
+}
+
+errorDict initQT()
+{
+    errorDict errors;
+    errors["init"] = InitializeQTML(0L);
+    errors["enter"] = EnterMovies();
+    return errors;
+}
+
+Track* getTracks(Movie& movie, int* range)
+{
+    const int numOfTracks = (range[1] - range[0]) + 1;
+    Track* allTracks = new Track[numOfTracks];
+    for (int i = 0; i < numOfTracks; i++)
+    {
+        allTracks[i] = GetMovieTrack(movie, (range[0] + i));
+    }
+    return allTracks;
+
+}
+
+AudioChannelLayout* buildLayouts(int num)
+{
+    AudioChannelLabel currentch;
+    AudioChannelLayout* totalLayouts = new AudioChannelLayout[num];
+    for (int i = 0; i < num; i++)
+    {
+        currentch = i+1;
+        totalLayouts[i] = {kAudioChannelLayoutTag_UseChannelDescriptions,
+            NULL, 1, {currentch, NULL, NULL}};
+    }
+    return totalLayouts;
 }
 
 
 int main()
 {
-    OSErr initerr = InitializeQTML(0L);
-    OSErr entererr = EnterMovies();
+    errorDict initerrors = initQT();
 
-    std::string mystring2 = "D:\\CodingProjects\\_ffmpeg\\resolve_OG.mov";
-    std::string mystring3 = "D:\\CodingProjects\\_ffmpeg\\resolve_51.mov";
-    std::string mystring = "C:\\Users\\cagef\\projects\\_testfiles\\resolve_OG.mov";
-    const char* mystringchar = "C:\\Users\\cagef\\projects\\_testfiles\\Batman_Mono.mov";
+    for (auto item : initerrors)
+    {
+        if (item.second != 0)
+            exit(1);
+    }
+
+    const char* fileURL = "C:\\Users\\cagef\\projects\\_testfiles\\Batman_Mono.mov";
 
     Movie myMovie;
-    Size mySize = (Size)strlen(mystring.c_str()) + 1;
-    Handle myHandle = NewHandle(mySize);
-    OSType myDataRefType = NULL;
-	AudioChannelLayout* layout = nil;
-	ByteCount layoutsize;
-	UInt32 size = 0;
-	MovieAudioExtractionRef extractionSessionRef = nil;
-	SoundDescriptionHandle mySound = nil;
-
-   AudioChannelDescription myDescriptions[6];
-    myDescriptions[0] = {kAudioChannelLabel_Left, NULL, NULL};
-    myDescriptions[1] = {kAudioChannelLabel_Right, NULL, NULL};
-    myDescriptions[2] = {kAudioChannelLabel_Center, NULL, NULL};
-    myDescriptions[3] = {kAudioChannelLabel_LFEScreen, NULL, NULL};
-    myDescriptions[4] = {kAudioChannelLabel_LeftSurround, NULL, NULL};
-    myDescriptions[5] = {kAudioChannelLabel_RightSurround, NULL, NULL};
-
-    const int sizeofmyDesc = sizeof(myDescriptions) / sizeof(AudioChannelDescription);
-    AudioChannelLayout mylayout = {kAudioChannelLayoutTag_UseChannelDescriptions,
-        NULL, 6, NULL};
-
-    for (int i = 0; i < sizeofmyDesc; i++)
-    {
-        mylayout.mChannelDescriptions[i] = myDescriptions[i];
-    }
-    layoutsize = sizeof(mylayout);
-
     FSSpec myFileSpec;
+    const FSSpec* myFSptr = &myFileSpec;
     short myRefNum;
     short myResID;
-    const char* stringName = "MyFileName";
+    const char* stringName = "WorkingFile";
     StringPtr myStringPtr = (StringPtr)stringName;
     Boolean wasChanged;
+    int trackRange[2]{ 2,7 };
+    int numberOfTracks = (trackRange[1] - trackRange[0]) + 1;
 
-    OSErr pathtospecerr = NativePathNameToFSSpec((char*)mystringchar, &myFileSpec, 0);
-    const FSSpec* myFSptr = &myFileSpec;
+    OSErr pathtospecerr = NativePathNameToFSSpec((char*)fileURL, (FSSpec*)myFSptr, 0);
     OSErr openerr = OpenMovieFile(myFSptr, &myRefNum, 0);
     OSErr newmovieerr = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
 
-	Track firsttrack = GetMovieTrack(myMovie, 2);
-    AudioChannelLayout leftLayout = { kAudioChannelLayoutTag_UseChannelDescriptions,
-    NULL, 1, {kAudioChannelLabel_Left, NULL, NULL}};
-    ByteCount leftLayoutSize = sizeof(leftLayout);
+    Track* workingTracks = getTracks(myMovie, trackRange);
+    AudioChannelLayout* layouts = buildLayouts(numberOfTracks);
 
-    OSErr settrackerr = QTSetTrackProperty(firsttrack, kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
-        leftLayoutSize, &leftLayout);
+    for (int i = 0; i < numberOfTracks; i++)
+    {
+        OSErr settrackerr = QTSetTrackProperty(workingTracks[i], kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
+            sizeof(layouts[i]), &layouts[i]);
+    }
 
-    OSErr updateerr = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"test.mov");
-
+    OSErr updateerr = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"ChannelLayoutUpdate");
     OSErr closeerr = CloseMovieFile(myRefNum);
 
 
-    std::cout << "test" << std::endl;
-
+    //print("test");
 
 }

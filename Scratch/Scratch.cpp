@@ -5,34 +5,41 @@
 typedef std::map<std::string, int> errorDict;
 typedef int error;
 
+template<typename T>
+void print(T toprint)
+{
+    std::cout << toprint << std::endl;
+}
+
 errorDict initQT()
 {
-    errorDict returnDict{ {"first", 0}, {"second", 1} };
+    errorDict returnDict{ {"first", 20}, {"second", 15} };
     return returnDict;
 }
 
-error pullFromDict(errorDict *dict, std::string *value, std::string *answer)
+int pullFromDict(errorDict& dict, std::string& value)
 {
-    if (dict->find(*value) == dict->end())
+    if (dict.find(value) == dict.end())
     {
-        answer = nullptr;
-        return 1;
+        return -1;
     }
     else
     {
-        *answer = (*dict)[*value];
-        return 0;
+        return (dict)[value];
     }
 }
 
 
 int main()
 {
-    errorDict returnvalues = initQT();
+    int* myints = new int[5];
 
-    std::string answer;
-    error dicterr = pullFromDict(&returnvalues, (std::string*)"test", &answer);
+    for (int i = 0; i < 5; i++)
+        myints[i] = i+10;
 
-
+    for (int i = 0; i < 5; i++)
+    {
+        print(myints[i]);
+    }
 
 }
