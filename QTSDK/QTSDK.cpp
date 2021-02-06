@@ -46,7 +46,7 @@ AudioChannelLayout* buildLayouts(int num)
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
     errorDict initerrors = initQT();
 

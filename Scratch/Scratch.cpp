@@ -1,6 +1,8 @@
 #include <iostream>
-#include <array>
 #include <map>
+#include <regex>
+
+using namespace std;
 
 typedef std::map<std::string, int> errorDict;
 typedef int error;
@@ -11,35 +13,24 @@ void print(T toprint)
     std::cout << toprint << std::endl;
 }
 
-errorDict initQT()
+int main(int argc, char* argv[])
 {
-    errorDict returnDict{ {"first", 20}, {"second", 15} };
-    return returnDict;
-}
+    
+    //print(argc);
 
-int pullFromDict(errorDict& dict, std::string& value)
-{
-    if (dict.find(value) == dict.end())
-    {
-        return -1;
-    }
-    else
-    {
-        return (dict)[value];
-    }
-}
+    //if (argc < 3)
+    //{
+    //    print("Not enough arguments");
+    //    exit(1);
+    //}
 
+    //std::string channels = argv[1];
+    //std::string path = argv[2];
 
-int main()
-{
-    int* myints = new int[5];
+    string mystring = "test,string";
 
-    for (int i = 0; i < 5; i++)
-        myints[i] = i+10;
+    size_t test = mystring.find_first_not_of('*', 0);
 
-    for (int i = 0; i < 5; i++)
-    {
-        print(myints[i]);
-    }
+    print((test == string::npos));
 
 }
