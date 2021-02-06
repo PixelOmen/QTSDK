@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include <regex>
+#include <cstring>
 
 using namespace std;
 
@@ -27,10 +28,22 @@ int main(int argc, char* argv[])
     //std::string channels = argv[1];
     //std::string path = argv[2];
 
-    string mystring = "test,string";
+    string mystring = "test11,test22222,test33";
+    string delim = ",";
+    string parts[3];
 
-    size_t test = mystring.find_first_not_of('*', 0);
-
-    print((test == string::npos));
+    size_t delimsize = sizeof(delim) / sizeof(string);
+    size_t counter = 0;
+    size_t start = 0;
+    size_t offset = mystring.find(delim);
+    while (offset != string::npos)
+    {
+        parts[counter] = mystring.substr(start, offset - start);
+        start = offset + delimsize;
+        offset = mystring.find(delim, start);
+        ++counter;
+        if (offset == string::npos)
+            parts[counter] = mystring.substr(start, mystring.size());
+    }
 
 }
