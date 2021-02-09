@@ -3,14 +3,9 @@
 #include <Movies.h>
 #include <QTML.h>
 #include <CoreAudioTypes.h>
+#include "general.h"
 
 typedef std::map<std::string, OSErr> errorDict;
-
-template<typename T>
-void print(T toprint)
-{
-    std::cout << toprint << std::endl;
-}
 
 errorDict initQT()
 {
@@ -48,6 +43,16 @@ AudioChannelLayout* buildLayouts(int num)
 
 int main(int argc, char* argv[])
 {
+    int* channels = parseargs(argc, argv);
+    print(channels[0]);
+    print(channels[1]);
+
+    if ((string)argv[2] == "debug")
+    {
+        print("Exited");
+        exit(1);
+    }
+
     errorDict initerrors = initQT();
 
     for (auto item : initerrors)
@@ -56,15 +61,14 @@ int main(int argc, char* argv[])
             exit(1);
     }
 
-    const char* fileURL = "C:\\Users\\cagef\\projects\\_testfiles\\Batman_Mono.mov";
+    const char* fileURL = argv[2];
 
     Movie myMovie;
     FSSpec myFileSpec;
     const FSSpec* myFSptr = &myFileSpec;
     short myRefNum;
     short myResID;
-    const char* stringName = "WorkingFile";
-    StringPtr myStringPtr = (StringPtr)stringName;
+    StringPtr myStringPtr = (StringPtr)"WorkingFile";
     Boolean wasChanged;
     int trackRange[2]{ 2,7 };
     int numberOfTracks = (trackRange[1] - trackRange[0]) + 1;

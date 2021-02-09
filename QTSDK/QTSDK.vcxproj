@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arghandler.cpp" />
     <ClCompile Include="QTSDK.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +492,7 @@
     <ClInclude Include="CIncludes\Video.h" />
     <ClInclude Include="CIncludes\WebServicesCore.h" />
     <ClInclude Include="CIncludes\WSMethodInvocation.h" />
+    <ClInclude Include="general.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\CVClient.lib" />

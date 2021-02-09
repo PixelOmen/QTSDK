@@ -18,6 +18,9 @@
     <ClCompile Include="QTSDK.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="arghandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CIncludes\AE.h">
@@ -1054,6 +1057,9 @@
     </ClInclude>
     <ClInclude Include="CIncludes\GNUCompatibility\stdint.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="general.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
