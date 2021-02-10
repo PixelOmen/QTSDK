@@ -8,6 +8,7 @@ void print(T toprint)
     std::cout << toprint << std::endl;
 }
 
-int* parseargs(int& argc, char* argv[]);
+int* parseargs(int& argc, char* argv[], int& totaltracks);
+
 
 

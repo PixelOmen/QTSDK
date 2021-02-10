@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <string>
 #include <Movies.h>
 #include <QTML.h>
 #include <CoreAudioTypes.h>
@@ -24,7 +25,6 @@ Track* getTracks(Movie& movie, int* range)
         allTracks[i] = GetMovieTrack(movie, (range[0] + i));
     }
     return allTracks;
-
 }
 
 AudioChannelLayout* buildLayouts(int num)
@@ -33,7 +33,14 @@ AudioChannelLayout* buildLayouts(int num)
     AudioChannelLayout* totalLayouts = new AudioChannelLayout[num];
     for (int i = 0; i < num; i++)
     {
-        currentch = i+1;
+        if (i > 6)
+        {
+            currentch = i + 31;
+        }
+        else
+        {
+			currentch = i + 1;
+        }
         totalLayouts[i] = {kAudioChannelLayoutTag_UseChannelDescriptions,
             NULL, 1, {currentch, NULL, NULL}};
     }
@@ -43,9 +50,9 @@ AudioChannelLayout* buildLayouts(int num)
 
 int main(int argc, char* argv[])
 {
-    int* channels = parseargs(argc, argv);
-    print(channels[0]);
-    print(channels[1]);
+    int numberOfTracks;
+    int* channels;
+    channels = parseargs(argc, argv, numberOfTracks);
 
     if ((string)argv[2] == "debug")
     {
@@ -58,7 +65,10 @@ int main(int argc, char* argv[])
     for (auto item : initerrors)
     {
         if (item.second != 0)
+        {
+            cout << "Init QT error in " << "'" << item.first << "'" << endl;
             exit(1);
+        }
     }
 
     const char* fileURL = argv[2];
@@ -70,26 +80,31 @@ int main(int argc, char* argv[])
     short myResID;
     StringPtr myStringPtr = (StringPtr)"WorkingFile";
     Boolean wasChanged;
-    int trackRange[2]{ 2,7 };
-    int numberOfTracks = (trackRange[1] - trackRange[0]) + 1;
+    errorDict converterrors;
 
-    OSErr pathtospecerr = NativePathNameToFSSpec((char*)fileURL, (FSSpec*)myFSptr, 0);
-    OSErr openerr = OpenMovieFile(myFSptr, &myRefNum, 0);
-    OSErr newmovieerr = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
+    converterrors["PathToSpec"] = NativePathNameToFSSpec((char*)fileURL, (FSSpec*)myFSptr, 0);
+    converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
+    converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
 
-    Track* workingTracks = getTracks(myMovie, trackRange);
+    Track* workingTracks = getTracks(myMovie, channels);
     AudioChannelLayout* layouts = buildLayouts(numberOfTracks);
 
     for (int i = 0; i < numberOfTracks; i++)
     {
-        OSErr settrackerr = QTSetTrackProperty(workingTracks[i], kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
+        converterrors["SetTrack"] = QTSetTrackProperty(workingTracks[i], kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
             sizeof(layouts[i]), &layouts[i]);
     }
 
-    OSErr updateerr = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"ChannelLayoutUpdate");
-    OSErr closeerr = CloseMovieFile(myRefNum);
+    converterrors["UpdateResource"] = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"ChannelLayoutUpdate");
+    converterrors["CloseMovie"] = CloseMovieFile(myRefNum);
 
-
-    //print("test");
-
+    for (auto i : converterrors)
+    {
+        if (i.second != 0)
+        {
+            cout << "Error from " << i.first << endl;
+            exit(1);
+        }
+    }
+    print("Success");
 }
