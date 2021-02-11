@@ -33,9 +33,9 @@ AudioChannelLayout* buildLayouts(int num)
     AudioChannelLayout* totalLayouts = new AudioChannelLayout[num];
     for (int i = 0; i < num; i++)
     {
-        if (i > 6)
+        if (i > 5)
         {
-            currentch = i + 31;
+            currentch = i + 32;
         }
         else
         {
