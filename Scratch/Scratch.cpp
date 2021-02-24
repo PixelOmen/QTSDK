@@ -10,12 +10,15 @@ void print(T toprint)
     std::cout << toprint << std::endl;
 }
 
+struct teststruct
+{
+    int test1 = 10;
+    string test2 = "my test string";
+};
+
 int main(int argc, char* argv[])
 {
-
-    string firststr = "test";
-    string secondstr = "secondtest";
-
-    ostringstream testformat;
-
+    teststruct myteststruct;
+    myteststruct.test1 = 20;
+    print(myteststruct.test1);
 }
