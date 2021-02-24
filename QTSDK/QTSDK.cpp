@@ -124,14 +124,11 @@ int main(int argc, char* argv[])
     TimeValue myMovieDur = GetMovieDuration(myMovie);
     TimeScale myTS = GetMovieTimeScale(myMovie);
 
-    TimeCodeTime myTC;
-    myTC.hours = 0;
-    myTC.minutes = 10;
-    myTC.seconds = 1;
-    myTC.frames = 0;
-
     TimeCodeRecord myTRR;
-    myTRR.t = myTC;
+    myTRR.t.hours = (UInt8)0;
+    myTRR.t.minutes = (UInt8)59;
+    myTRR.t.seconds = (UInt8)50;
+    myTRR.t.frames = (UInt8)00;
 
     long mySize = sizeof(TimeCodeDescription);
     TimeCodeDescriptionHandle myDesc = (TimeCodeDescriptionHandle)NewHandleClear(mySize);
@@ -156,7 +153,7 @@ int main(int argc, char* argv[])
     long** framenum = (long**)NewHandle(sizeof(long));
     Handle frameH = (Handle)framenum;
     HandlerError TCtoFrameErr = TCTimeCodeToFrameNumber(GetMediaHandler(newTCmedia), &myTCDef, &myTRR, *framenum);
-    //framenum = EndianS32_NtoB(framenum);
+    **framenum = EndianS32_NtoB(**framenum);
 
 
     //OSErr setdefaulterr = SetMediaDefaultDataRefIndex(newTCmedia, 1);
@@ -165,7 +162,7 @@ int main(int argc, char* argv[])
         SampleDescriptionHandle(myDesc), 1, 0, 0);
     OSErr endEditsErr = EndMediaEdits(newTCmedia);
 
-    OSErr insertErr = InsertMediaIntoTrack(newTCtrack, 0, 0, myMovieDur, 1);
+    OSErr insertErr = InsertMediaIntoTrack(newTCtrack, 0, 0, myMovieDur, fixed1);
     OSErr myErr = AddTrackReference(videotrack, newTCtrack, TimeCodeMediaType, NULL);
 
     OSErr generalErr = GetMoviesError();
