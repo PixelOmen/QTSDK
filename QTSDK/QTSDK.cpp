@@ -1,15 +1,10 @@
-#include <iostream>
-#include <map>
-#include <string>
-#include <Movies.h>
+#include "general.h"
 #include <QTML.h>
+#include <Movies.h>
 #include <CoreAudioTypes.h>
 #include <QuickTimeComponents.h>
-#include "general.h"
 
 using namespace std;
-
-typedef std::map<std::string, OSErr> errorDict;
 
 errorDict initQT()
 {
@@ -30,7 +25,7 @@ Track* getTracks(Movie& movie, int* range)
     return allTracks;
 }
 
-AudioChannelLayout* buildLayouts(int num)
+AudioChannelLayout* buildLayouts(int& num)
 {
     AudioChannelLabel currentch;
     AudioChannelLayout* totalLayouts = new AudioChannelLayout[num];
@@ -50,7 +45,7 @@ AudioChannelLayout* buildLayouts(int num)
     return totalLayouts;
 }
 
-void FlagQT(Movie& myMovie, int* channels, int& numberOfTracks, errorDict& converterrors, short& myRefNum, short& myResID)
+void FlagQT(Movie& myMovie, int* channels, int& numberOfTracks, errorDict& converterrors)
 {
     Track* workingTracks = getTracks(myMovie, channels);
     AudioChannelLayout* layouts = buildLayouts(numberOfTracks);
@@ -60,67 +55,12 @@ void FlagQT(Movie& myMovie, int* channels, int& numberOfTracks, errorDict& conve
         converterrors["SetTrack"] = QTSetTrackProperty(workingTracks[i], kQTPropertyClass_Audio, kQTAudioPropertyID_ChannelLayout,
             sizeof(layouts[i]), &layouts[i]);
     }
-
-    converterrors["UpdateResource"] = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"ChannelLayoutUpdate");
-    converterrors["CloseMovie"] = CloseMovieFile(myRefNum);
-
-    for (auto i : converterrors)
-    {
-        if (i.second != 0)
-        {
-            cout << "Error from " << i.first << endl;
-            exit(1);
-        }
-    }
-
-    print("Success");
-    exit(0);
 }
 
-int main(int argc, char* argv[])
+void SetTC(const Movie& myMovie, errorDict& converterrors)
 {
-    int numberOfTracks;
-    int* channels;
-    //channels = parseargs(argc, argv, numberOfTracks);
-
-    //if ((string)argv[2] == "debug")
-    //{
-    //    print("Exited");
-    //    exit(1);
-    //}
-
-    errorDict initerrors = initQT();
-
-    for (auto item : initerrors)
-    {
-        if (item.second != 0)
-        {
-            cout << "Init QT error in " << "'" << item.first << "'" << endl;
-            exit(1);
-        }
-    }
-
-    //const char* fileURL = argv[2];
-    const char* fileURL = "C://Users//cagef//projects//_testfiles//TC_Testing.mov";
-
-    Movie myMovie;
-    FSSpec myFileSpec;
-    const FSSpec* myFSptr = &myFileSpec;
-    short myRefNum;
-    short myResID;
-    StringPtr myStringPtr = (StringPtr)"WorkingFile";
-    Boolean wasChanged;
-    errorDict converterrors;
-
-    converterrors["PathToSpec"] = NativePathNameToFSSpec((char*)fileURL, (FSSpec*)myFSptr, 0);
-    converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
-    converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
-
-    //FlagQT(myMovie, channels, numberOfTracks, converterrors, myRefNum, myResID);
-
-    Track tctrack = GetMovieTrack(myMovie, 8);
-    Track videotrack = GetMovieTrack(myMovie, 1);
-
+    //Track videotrack = GetMovieTrack(myMovie, 1);
+    Track videotrack = GetMovieIndTrackType(myMovie, 1, VideoMediaType, movieTrackMediaType);
     TimeValue myMovieDur = GetMovieDuration(myMovie);
     TimeScale myTS = GetMovieTimeScale(myMovie);
 
@@ -155,19 +95,56 @@ int main(int argc, char* argv[])
     HandlerError TCtoFrameErr = TCTimeCodeToFrameNumber(GetMediaHandler(newTCmedia), &myTCDef, &myTRR, *framenum);
     **framenum = EndianS32_NtoB(**framenum);
 
-
-    //OSErr setdefaulterr = SetMediaDefaultDataRefIndex(newTCmedia, 1);
-    OSErr beginEditsErr = BeginMediaEdits(newTCmedia);
-    OSErr addSampleErr = AddMediaSample(newTCmedia, frameH, 0, GetHandleSize(frameH), myMovieDur,
+    converterrors["BeginEdits"] = BeginMediaEdits(newTCmedia);
+    converterrors["AddMediaSample"] = AddMediaSample(newTCmedia, frameH, 0, GetHandleSize(frameH), myMovieDur,
         SampleDescriptionHandle(myDesc), 1, 0, 0);
-    OSErr endEditsErr = EndMediaEdits(newTCmedia);
+    converterrors["EndEdits"] = EndMediaEdits(newTCmedia);
 
-    OSErr insertErr = InsertMediaIntoTrack(newTCtrack, 0, 0, myMovieDur, fixed1);
-    OSErr myErr = AddTrackReference(videotrack, newTCtrack, TimeCodeMediaType, NULL);
+    converterrors["InsertMedia"] = InsertMediaIntoTrack(newTCtrack, 0, 0, myMovieDur, fixed1);
+    converterrors["AddTrackReference"] = AddTrackReference(videotrack, newTCtrack, TimeCodeMediaType, NULL);
+}
 
-    OSErr generalErr = GetMoviesError();
 
 
+int main(int argc, char* argv[])
+{
+    int numOfTracks;
+    int* channels = parseargs(argc, argv, &numOfTracks);
+
+    //exit(0);
+
+    errorDict initerrors = initQT();
+
+    for (auto item : initerrors)
+    {
+        if (item.second != 0)
+        {
+            cout << "Init QT error in " << "'" << item.first << "'" << endl;
+            exit(1);
+        }
+    }
+
+    //const char* fileURL = argv[2];
+    const char* fileURL = "C://Users//cagef//projects//_testfiles//TC_Testing.mov";
+
+    Movie myMovie;
+    FSSpec myFileSpec;
+    const FSSpec* myFSptr = &myFileSpec;
+    short myRefNum;
+    short myResID;
+    StringPtr myStringPtr = (StringPtr)"WorkingFile";
+    Boolean wasChanged;
+    errorDict converterrors;
+
+    converterrors["PathToSpec"] = NativePathNameToFSSpec((char*)fileURL, (FSSpec*)myFSptr, 0);
+    converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
+    converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
+
+    FlagQT(myMovie, channels, numOfTracks, converterrors);
+
+    SetTC(myMovie, converterrors);
+
+    converterrors["General"] = GetMoviesError();
     converterrors["UpdateResource"] = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"TCUpdate");
     converterrors["CloseMovie"] = CloseMovieFile(myRefNum);
 
@@ -175,16 +152,10 @@ int main(int argc, char* argv[])
     {
         if (i.second != 0)
         {
-            cout << "Error from " << i.first << endl;
+            cout << "Error from " << i.first << ". Error: " << i.second << endl;
+            exit(1);
         }
-    };
-    
-    // ----- Media Sample DESCRIPTION -----------
-    //TimeCodeDef TCdef23976{0, 24000, 1001, 24};
-    //TimeCodeDescription myTCdesc {0, TimeCodeMediaType, 0, 0, 1, 0, TCdef23976, 0};
-    //myTCdesc.descSize = sizeof(myTCdesc);
-    //TimeCodeDescriptionHandle myTChandle = (TimeCodeDescriptionHandle)NewHandle(myTCdesc.descSize);
-    //OSErr setMediaDescErr = SetMediaSampleDescription(tctrackmedia, 1, (SampleDescriptionHandle)myTChandle);
-    //OSErr generalErr = GetMoviesError();
-    //Media newtctrackmedia = NewTrackMedia(tctrack, TimeCodeMediaType, 24000, nil, MovieMediaType);
+    }
+
+    print("Success");
 }

@@ -1061,6 +1061,9 @@
     <ClInclude Include="general.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="arghandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Libraries\CVClient.lib" />

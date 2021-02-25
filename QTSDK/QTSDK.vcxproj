@@ -148,6 +148,7 @@
     <ClCompile Include="QTSDK.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="arghandler.h" />
     <ClInclude Include="CIncludes\AE.h" />
     <ClInclude Include="CIncludes\AEDataModel.h" />
     <ClInclude Include="CIncludes\AEHelpers.h" />
