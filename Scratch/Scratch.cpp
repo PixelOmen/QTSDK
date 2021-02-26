@@ -4,10 +4,14 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <array>
 using namespace std;
 
-int global = 10;
-
+template<typename T>
+bool contains(T item, vector<T> vec)
+{
+    return (std::find(vec.begin(), vec.end(), item) != vec.end());
+}
 
 template<typename T>
 void print(T toprint)
@@ -15,33 +19,8 @@ void print(T toprint)
     std::cout << toprint << std::endl;
 }
 
-struct teststruct
-{
-    int test1 = 10;
-    string test2 = "my test string";
-};
-
-void somefunc()
-{
-    print(global);
-}
-
 int main(int argc, char* argv[])
 {
-    string teststring = "12345";
-    vector<string> testargs;
-    for (int i = 0; i < argc; ++i)
-    {
-        testargs.emplace_back(argv[i]);
-    }
-    
-    typedef map<string, string> command;
-    
-    command testcmd;
-    string key = "cmd1";
-    testcmd[key] = "param1";
-
-    command newcmd;
-    print(testcmd.empty());
-
+    vector<string> test{ "teststring" };
+    print(contains((string)"teststring2", test));
 }

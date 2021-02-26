@@ -6,15 +6,13 @@
 
 using namespace std;
 
-errorDict initQT()
+void initQT(errorDict* errors)
 {
-    errorDict errors;
-    errors["init"] = InitializeQTML(0L);
-    errors["enter"] = EnterMovies();
-    return errors;
+    (*errors)["init"] = InitializeQTML(0L);
+    (*errors)["enter"] = EnterMovies();
 }
 
-Track* getTracks(Movie& movie, int* range)
+Track* getTracks(Movie& movie, array<int, 2> range)
 {
     const int numOfTracks = (range[1] - range[0]) + 1;
     Track* allTracks = new Track[numOfTracks];
@@ -45,7 +43,7 @@ AudioChannelLayout* buildLayouts(int& num)
     return totalLayouts;
 }
 
-void FlagQT(Movie& myMovie, int* channels, int& numberOfTracks, errorDict& converterrors)
+void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, errorDict& converterrors)
 {
     Track* workingTracks = getTracks(myMovie, channels);
     AudioChannelLayout* layouts = buildLayouts(numberOfTracks);
@@ -59,7 +57,6 @@ void FlagQT(Movie& myMovie, int* channels, int& numberOfTracks, errorDict& conve
 
 void SetTC(const Movie& myMovie, errorDict& converterrors)
 {
-    //Track videotrack = GetMovieTrack(myMovie, 1);
     Track videotrack = GetMovieIndTrackType(myMovie, 1, VideoMediaType, movieTrackMediaType);
     TimeValue myMovieDur = GetMovieDuration(myMovie);
     TimeScale myTS = GetMovieTimeScale(myMovie);
@@ -108,12 +105,29 @@ void SetTC(const Movie& myMovie, errorDict& converterrors)
 
 int main(int argc, char* argv[])
 {
-    int numOfTracks;
-    int* channels = parseargs(argc, argv, &numOfTracks);
+    int numOfTracks = NULL;
+    array<int, 2> channels{};
+    char* fileURL = nullptr;
+    vector<string> tasks;
+    commands argcmds = parseargs(argc, argv, &numOfTracks, &channels, &fileURL, &tasks);
 
-    //exit(0);
+    for (auto i : argcmds)
+    {
+        cout << i.first << " with " << i.second << "\n";
+    }
 
-    errorDict initerrors = initQT();
+    if (!tasks.empty())
+    {
+        for (auto i : tasks)
+        {
+            cout << "Task: " << i << "\n";
+        }
+    }
+
+    exit(0);
+
+    errorDict initerrors;
+    initQT(&initerrors);
 
     for (auto item : initerrors)
     {
@@ -124,9 +138,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    //const char* fileURL = argv[2];
-    const char* fileURL = "C://Users//cagef//projects//_testfiles//TC_Testing.mov";
-
     Movie myMovie;
     FSSpec myFileSpec;
     const FSSpec* myFSptr = &myFileSpec;
@@ -136,7 +147,7 @@ int main(int argc, char* argv[])
     Boolean wasChanged;
     errorDict converterrors;
 
-    converterrors["PathToSpec"] = NativePathNameToFSSpec((char*)fileURL, (FSSpec*)myFSptr, 0);
+    converterrors["PathToSpec"] = NativePathNameToFSSpec(fileURL, (FSSpec*)myFSptr, 0);
     converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
     converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
 
