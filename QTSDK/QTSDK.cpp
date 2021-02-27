@@ -2,7 +2,6 @@
 #include <QTML.h>
 #include <Movies.h>
 #include <CoreAudioTypes.h>
-#include <QuickTimeComponents.h>
 
 using namespace std;
 
@@ -102,23 +101,18 @@ void SetTC(const Movie& myMovie, errorDict& converterrors)
 }
 
 
-
 int main(int argc, char* argv[])
 {
-    int numOfTracks = NULL;
-    array<int, 2> channels{};
-    char* fileURL = nullptr;
-    vector<string> tasks;
-    commands argcmds = parseargs(argc, argv, &numOfTracks, &channels, &fileURL, &tasks);
+    argHandler args{ argc, argv };
 
-    for (auto i : argcmds)
+    for (auto i : args.getparams())
     {
         cout << i.first << " with " << i.second << "\n";
     }
 
-    if (!tasks.empty())
+    if (!args.tasks.empty())
     {
-        for (auto i : tasks)
+        for (auto i : args.tasks)
         {
             cout << "Task: " << i << "\n";
         }
@@ -126,7 +120,7 @@ int main(int argc, char* argv[])
 
     exit(0);
 
-    errorDict initerrors;
+    errorDict initerrors{};
     initQT(&initerrors);
 
     for (auto item : initerrors)
@@ -147,12 +141,11 @@ int main(int argc, char* argv[])
     Boolean wasChanged;
     errorDict converterrors;
 
-    converterrors["PathToSpec"] = NativePathNameToFSSpec(fileURL, (FSSpec*)myFSptr, 0);
+    converterrors["PathToSpec"] = NativePathNameToFSSpec(const_cast<char*>(args.fileURL.c_str()), (FSSpec*)myFSptr, 0);
     converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
     converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
 
-    FlagQT(myMovie, channels, numOfTracks, converterrors);
-
+    FlagQT(myMovie, args.channelRange, args.numOfTracks, converterrors);
     SetTC(myMovie, converterrors);
 
     converterrors["General"] = GetMoviesError();

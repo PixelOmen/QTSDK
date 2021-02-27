@@ -8,19 +8,43 @@
 using namespace std;
 
 template<typename T>
-bool contains(T item, vector<T> vec)
-{
-    return (std::find(vec.begin(), vec.end(), item) != vec.end());
-}
-
-template<typename T>
 void print(T toprint)
 {
-    std::cout << toprint << std::endl;
+	std::cout << toprint << std::endl;
 }
+
+class testclass
+{
+public:
+	int m_x;
+	int m_y;
+
+	testclass(int x, int y)
+		: m_x(x), m_y(y)
+	{
+	}
+
+	void printx();
+	void printy();
+};
+
+void testclass::printx()
+{
+	print(this->m_x);
+	this->printy();
+}
+
+void testclass::printy()
+{
+	print(this->m_y);
+}
+
 
 int main(int argc, char* argv[])
 {
-    vector<string> test{ "teststring" };
-    print(contains((string)"teststring2", test));
+	testclass test{ 3 , 10 };
+	testclass test2{ 5 , 20 };
+
+	test.printx();
+	test2.printx();
 }
