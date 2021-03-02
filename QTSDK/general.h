@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <stdio.h>
 
 #include <QuickTimeComponents.h>
 #include <MacTypes.h>
@@ -45,6 +46,7 @@ private:
 	vector<string> all;
 	commands params;
 
+	void parsePath();
 	void parseTC();
 	void parsechannels();
 	void parsecmds();

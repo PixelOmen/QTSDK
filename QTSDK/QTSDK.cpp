@@ -54,17 +54,11 @@ void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, errorD
     }
 }
 
-void SetTC(const Movie& myMovie, errorDict& converterrors)
+void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR)
 {
     Track videotrack = GetMovieIndTrackType(myMovie, 1, VideoMediaType, movieTrackMediaType);
     TimeValue myMovieDur = GetMovieDuration(myMovie);
     TimeScale myTS = GetMovieTimeScale(myMovie);
-
-    TimeCodeRecord myTRR;
-    myTRR.t.hours = (UInt8)0;
-    myTRR.t.minutes = (UInt8)59;
-    myTRR.t.seconds = (UInt8)50;
-    myTRR.t.frames = (UInt8)00;
 
     long mySize = sizeof(TimeCodeDescription);
     TimeCodeDescriptionHandle myDesc = (TimeCodeDescriptionHandle)NewHandleClear(mySize);
@@ -103,8 +97,9 @@ void SetTC(const Movie& myMovie, errorDict& converterrors)
 
 int main(int argc, char* argv[])
 {
-    //argHandler args{ argc, argv };
+    argHandler args{ argc, argv };
 
+    // Debug only, checks incoming arguments
     //for (auto i : args.getparams())
     //{
     //    cout << i.first << " with " << i.second << "\n";
@@ -117,57 +112,65 @@ int main(int argc, char* argv[])
     //        cout << "Task: " << i << "\n";
     //    }
     //}
+    // end of Debug only
 
-    string somestring = "this,is,a,test";
-    string somedelim = ",";
+    errorDict initerrors{};
+    initQT(&initerrors);
 
-    vector<string> test = stringtools::split(somestring, somedelim);
+    for (auto item : initerrors)
+    {
+        if (item.second != 0)
+        {
+            cout << "Init QT error in " << "'" << item.first << "'" << endl;
+            exit(1);
+        }
+    }
 
-    int size = test.size();
+    Movie myMovie;
+    FSSpec myFileSpec;
+    const FSSpec* myFSptr = &myFileSpec;
+    short myRefNum;
+    short myResID;
+    StringPtr myStringPtr = (StringPtr)"WorkingFile";
+    Boolean wasChanged;
+    errorDict converterrors;
 
-    exit(0);
+    converterrors["PathToSpec"] = NativePathNameToFSSpec(const_cast<char*>(args.fileURL.c_str()), (FSSpec*)myFSptr, 0);
+    converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
+    converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
 
+    if (converterrors["NewMovie"] != 0)
+    {
+        cout << "Error opening QT. 'NewMovie' error code: " << converterrors["NewMovie"] << "\n";
+        exit(1);
+    }
 
-    //errorDict initerrors{};
-    //initQT(&initerrors);
+    if (vectortools::contains(args.tasks, string("setTC")))
+    {
+		SetTC(myMovie, converterrors, args.TCR);
+    }
 
-    //for (auto item : initerrors)
-    //{
-    //    if (item.second != 0)
-    //    {
-    //        cout << "Init QT error in " << "'" << item.first << "'" << endl;
-    //        exit(1);
-    //    }
-    //}
+    if (vectortools::contains(args.tasks, string("flagaudio")))
+    {
+		FlagQT(myMovie, args.channelRange, args.numOfTracks, converterrors);        
+    }
 
-    //Movie myMovie;
-    //FSSpec myFileSpec;
-    //const FSSpec* myFSptr = &myFileSpec;
-    //short myRefNum;
-    //short myResID;
-    //StringPtr myStringPtr = (StringPtr)"WorkingFile";
-    //Boolean wasChanged;
-    //errorDict converterrors;
+    if (wasChanged)
+    {
+		converterrors["UpdateResource"] = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"Update");
+	}
 
-    //converterrors["PathToSpec"] = NativePathNameToFSSpec(const_cast<char*>(args.fileURL.c_str()), (FSSpec*)myFSptr, 0);
-    //converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
-    //converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
+    converterrors["CloseMovie"] = CloseMovieFile(myRefNum);
+    converterrors["General"] = GetMoviesError();
 
-    //FlagQT(myMovie, args.channelRange, args.numOfTracks, converterrors);
-    //SetTC(myMovie, converterrors);
+    for (auto i : converterrors)
+    {
+        if (i.second != 0)
+        {
+            cout << "Error from " << i.first << ". Error: " << i.second << endl;
+            exit(1);
+        }
+    }
 
-    //converterrors["General"] = GetMoviesError();
-    //converterrors["UpdateResource"] = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"TCUpdate");
-    //converterrors["CloseMovie"] = CloseMovieFile(myRefNum);
-
-    //for (auto i : converterrors)
-    //{
-    //    if (i.second != 0)
-    //    {
-    //        cout << "Error from " << i.first << ". Error: " << i.second << endl;
-    //        exit(1);
-    //    }
-    //}
-
-    //print("Success");
+    print("Success");
 }
