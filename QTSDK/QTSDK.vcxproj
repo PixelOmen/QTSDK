@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="argHandler.cpp" />
     <ClCompile Include="QTSDK.cpp" />
+    <ClCompile Include="stringtools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CIncludes\AE.h" />

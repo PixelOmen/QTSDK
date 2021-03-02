@@ -103,63 +103,71 @@ void SetTC(const Movie& myMovie, errorDict& converterrors)
 
 int main(int argc, char* argv[])
 {
-    argHandler args{ argc, argv };
+    //argHandler args{ argc, argv };
 
-    for (auto i : args.getparams())
-    {
-        cout << i.first << " with " << i.second << "\n";
-    }
+    //for (auto i : args.getparams())
+    //{
+    //    cout << i.first << " with " << i.second << "\n";
+    //}
 
-    if (!args.tasks.empty())
-    {
-        for (auto i : args.tasks)
-        {
-            cout << "Task: " << i << "\n";
-        }
-    }
+    //if (!args.tasks.empty())
+    //{
+    //    for (auto i : args.tasks)
+    //    {
+    //        cout << "Task: " << i << "\n";
+    //    }
+    //}
+
+    string somestring = "this,is,a,test";
+    string somedelim = ",";
+
+    vector<string> test = stringtools::split(somestring, somedelim);
+
+    int size = test.size();
 
     exit(0);
 
-    errorDict initerrors{};
-    initQT(&initerrors);
 
-    for (auto item : initerrors)
-    {
-        if (item.second != 0)
-        {
-            cout << "Init QT error in " << "'" << item.first << "'" << endl;
-            exit(1);
-        }
-    }
+    //errorDict initerrors{};
+    //initQT(&initerrors);
 
-    Movie myMovie;
-    FSSpec myFileSpec;
-    const FSSpec* myFSptr = &myFileSpec;
-    short myRefNum;
-    short myResID;
-    StringPtr myStringPtr = (StringPtr)"WorkingFile";
-    Boolean wasChanged;
-    errorDict converterrors;
+    //for (auto item : initerrors)
+    //{
+    //    if (item.second != 0)
+    //    {
+    //        cout << "Init QT error in " << "'" << item.first << "'" << endl;
+    //        exit(1);
+    //    }
+    //}
 
-    converterrors["PathToSpec"] = NativePathNameToFSSpec(const_cast<char*>(args.fileURL.c_str()), (FSSpec*)myFSptr, 0);
-    converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
-    converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
+    //Movie myMovie;
+    //FSSpec myFileSpec;
+    //const FSSpec* myFSptr = &myFileSpec;
+    //short myRefNum;
+    //short myResID;
+    //StringPtr myStringPtr = (StringPtr)"WorkingFile";
+    //Boolean wasChanged;
+    //errorDict converterrors;
 
-    FlagQT(myMovie, args.channelRange, args.numOfTracks, converterrors);
-    SetTC(myMovie, converterrors);
+    //converterrors["PathToSpec"] = NativePathNameToFSSpec(const_cast<char*>(args.fileURL.c_str()), (FSSpec*)myFSptr, 0);
+    //converterrors["OpenMovie"] = OpenMovieFile(myFSptr, &myRefNum, 0);
+    //converterrors["NewMovie"] = NewMovieFromFile(&myMovie, myRefNum, &myResID, myStringPtr, 0, &wasChanged);
 
-    converterrors["General"] = GetMoviesError();
-    converterrors["UpdateResource"] = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"TCUpdate");
-    converterrors["CloseMovie"] = CloseMovieFile(myRefNum);
+    //FlagQT(myMovie, args.channelRange, args.numOfTracks, converterrors);
+    //SetTC(myMovie, converterrors);
 
-    for (auto i : converterrors)
-    {
-        if (i.second != 0)
-        {
-            cout << "Error from " << i.first << ". Error: " << i.second << endl;
-            exit(1);
-        }
-    }
+    //converterrors["General"] = GetMoviesError();
+    //converterrors["UpdateResource"] = UpdateMovieResource(myMovie, myRefNum, myResID, (ConstStr255Param)"TCUpdate");
+    //converterrors["CloseMovie"] = CloseMovieFile(myRefNum);
 
-    print("Success");
+    //for (auto i : converterrors)
+    //{
+    //    if (i.second != 0)
+    //    {
+    //        cout << "Error from " << i.first << ". Error: " << i.second << endl;
+    //        exit(1);
+    //    }
+    //}
+
+    //print("Success");
 }

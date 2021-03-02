@@ -19,11 +19,17 @@ namespace vectortools
 	{
 		return (std::find(vec.begin(), vec.end(), item) != vec.end());
 	}
+
 	template<typename T>
-	bool contains(const commands& vec, const T& item)
+	bool contains(const commands& inmap, const T& item)
 	{
-		return (std::find(vec.begin(), vec.end(), item) != vec.end());
+		return (inmap.find(item) != inmap.end());
 	}
+}
+
+namespace stringtools
+{
+	vector<string> split(const string& instring, const string& delim);
 }
 
 template<typename T>

@@ -56,7 +56,7 @@ void argHandler::parsechannels()
 void argHandler::parsecmds()
 {
     string cmd;
-    int counter = 0;
+    unsigned int counter = 0;
     for (auto i : this->all)
     {
         if (i[0] == '-')
