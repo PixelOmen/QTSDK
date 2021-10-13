@@ -10,7 +10,6 @@ void argHandler::parsePath()
 	{
 		fclose(file);
 		this->fileURL = this->params["path"];
-		print("file exists");
 	}
 	else
 	{
