@@ -1,10 +1,9 @@
-﻿  QTSDK.cpp
-C:\Users\cagef\projects\cpp\QTSDK\QTSDK\QTSDK.cpp(80,10): warning C4101: 'channels': unreferenced local variable
-C:\Users\cagef\projects\cpp\QTSDK\QTSDK\QTSDK.cpp(79,9): warning C4101: 'numberOfTracks': unreferenced local variable
+﻿  argHandler.cpp
+  QTSDK.cpp
+  stringtools.cpp
+  Previous IPDB not found, fall back to full compilation.
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  149 of 223 functions (66.8%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    12 functions had inline decision re-evaluated but remain unchanged
+  All 427 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
-  QTSDK.vcxproj -> C:\Users\cagef\projects\cpp\QTSDK\Release\QTSDK.exe
+  QTSDK.vcxproj -> C:\Users\eacosta\Projects\cpp\QTSDK\Release\QTSDK.exe

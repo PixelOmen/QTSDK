@@ -42,7 +42,7 @@ void print(T toprint)
 class argHandler
 {
 private:
-	const vector<string> singlecmds{ "flagaudio", "setTC" };
+	const vector<string> singlecmds{ "flagaudio", "setTC", "me6ch"};
 	vector<string> all;
 	commands params;
 

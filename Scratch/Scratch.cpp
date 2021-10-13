@@ -19,6 +19,5 @@ typedef map<string, string> commands;
 
 int main(int argc, char* argv[])
 {
-	vector<int> test{ 10,20,30 };
-	print(test[1]);
+	print(1 % 2);
 }

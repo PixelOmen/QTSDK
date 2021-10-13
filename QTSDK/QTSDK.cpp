@@ -22,30 +22,46 @@ Track* getTracks(Movie& movie, array<int, 2> range)
     return allTracks;
 }
 
-AudioChannelLayout* buildLayouts(int& num)
+AudioChannelLayout* buildLayouts(int& num, bool& me6ch)
 {
     AudioChannelLabel currentch;
     AudioChannelLayout* totalLayouts = new AudioChannelLayout[num];
     for (int i = 0; i < num; i++)
     {
-        if (i > 5)
+        if (me6ch)
         {
-            currentch = i + 32;
+            if (i % 2 == 0)
+            {
+                currentch = 1;
+            }
+            else
+            {
+                currentch = 2;
+            }
+            totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
+                NULL, 1, {currentch, NULL, NULL} };
         }
         else
         {
-			currentch = i + 1;
+            if (i > 5)
+            {
+                currentch = i + 32;
+            }
+            else
+            {
+                currentch = i + 1;
+            }
+            totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
+                NULL, 1, {currentch, NULL, NULL} };
         }
-        totalLayouts[i] = {kAudioChannelLayoutTag_UseChannelDescriptions,
-            NULL, 1, {currentch, NULL, NULL}};
     }
     return totalLayouts;
 }
 
-void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, errorDict& converterrors)
+void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, bool& me6ch, errorDict& converterrors)
 {
     Track* workingTracks = getTracks(myMovie, channels);
-    AudioChannelLayout* layouts = buildLayouts(numberOfTracks);
+    AudioChannelLayout* layouts = buildLayouts(numberOfTracks, me6ch);
 
     for (int i = 0; i < numberOfTracks; i++)
     {
@@ -152,7 +168,10 @@ int main(int argc, char* argv[])
 
     if (vectortools::contains(args.tasks, string("flagaudio")))
     {
-		FlagQT(myMovie, args.channelRange, args.numOfTracks, converterrors);        
+        bool me6ch = vectortools::contains(args.tasks, string("me6ch"));
+        {
+            FlagQT(myMovie, args.channelRange, args.numOfTracks, me6ch, converterrors);
+        }
     }
 
     if (wasChanged)
