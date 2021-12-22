@@ -103,7 +103,7 @@ void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR
 
     converterrors["BeginEdits"] = BeginMediaEdits(newTCmedia);
     converterrors["AddMediaSample"] = AddMediaSample(newTCmedia, frameH, 0, GetHandleSize(frameH), myMovieDur,
-        SampleDescriptionHandle(myDesc), 1, 0, 0);
+                                                                            SampleDescriptionHandle(myDesc), 1, 0, 0);
     converterrors["EndEdits"] = EndMediaEdits(newTCmedia);
 
     converterrors["InsertMedia"] = InsertMediaIntoTrack(newTCtrack, 0, 0, myMovieDur, fixed1);

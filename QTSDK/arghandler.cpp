@@ -1,6 +1,8 @@
 #include "general.h"
 using namespace std;
 
+const vector<float> SUPPORTED_FPS{ 24, 23.976, 25, 30, 29.97, 60, 59.94 };
+
 void argHandler::parsePath()
 {
 	FILE* file;
@@ -32,6 +34,24 @@ void argHandler::parseTC()
 	this->TCR.t.minutes = (UInt8)stoi(tcstr[1]);
 	this->TCR.t.seconds = (UInt8)stoi(tcstr[2]);
 	this->TCR.t.frames = (UInt8)stoi(tcstr[3]);
+}
+
+void argHandler::parseFPS()
+{
+	try
+	{
+		this->fps = stof(this->params["fps"]);
+	}
+	catch (const exception& e)
+	{
+		print(e.what());
+		exit(1);
+	}
+
+	if (!vectortools::contains(SUPPORTED_FPS, this->fps))
+	{
+		cout << "Unsupported framerate: " << this->fps << endl;
+	}
 }
 
 void argHandler::parsechannels()
@@ -130,6 +150,14 @@ argHandler::argHandler(int& argc, char* argv[])
 
 	if (vectortools::contains(this->tasks, (string)"setTC"))
 	{
+		if (vectortools::contains(this->params, (string)"fps"))
+			this->parseFPS();
+		else
+		{
+			print("No FPS specified");
+			exit(1);
+		}
+
 		if (vectortools::contains(this->params, (string)"tc"))
 			this->parseTC();
 		else

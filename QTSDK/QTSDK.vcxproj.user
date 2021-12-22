@@ -4,7 +4,7 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>-path C:\Users\cagef\projects\_testfiles\TC_Testing.mov -setTC -tc 00:57:30:00 -channels 2,7 -flagaudio</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-path C:\Users\cagef\projects\_testfiles\TC_Testing.mov -setTC -tc 00:57:30:00</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

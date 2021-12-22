@@ -50,12 +50,14 @@ private:
 	void parseTC();
 	void parsechannels();
 	void parsecmds();
+	void parseFPS();
 public:
 	vector<string> tasks;
 	array<int, 2> channelRange{};
 	int numOfTracks;
 	string fileURL;
 	TimeCodeRecord TCR;
+	float fps;
 
 	argHandler(int& argc, char* argv[]);
 	commands getparams() const { return this->params; }
