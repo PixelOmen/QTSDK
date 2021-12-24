@@ -1,7 +1,7 @@
 #include "general.h"
 using namespace std;
 
-const vector<float> SUPPORTED_FPS{ 24, 23.976, 25, 30, 29.97, 60, 59.94 };
+const vector<float> SUPPORTED_FPS{ 24, 23.98, 23.976, 25, 30, 29.97, 60, 59.94 };
 
 void argHandler::parsePath()
 {
@@ -51,6 +51,7 @@ void argHandler::parseFPS()
 	if (!vectortools::contains(SUPPORTED_FPS, this->fps))
 	{
 		cout << "Unsupported framerate: " << this->fps << endl;
+		exit(1);
 	}
 }
 

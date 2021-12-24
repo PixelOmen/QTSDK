@@ -115,6 +115,9 @@ int main(int argc, char* argv[])
 {
     argHandler args{ argc, argv };
 
+    print(args.fps);
+    exit(0);
+
     // Debug only, checks incoming arguments
     //for (auto i : args.getparams())
     //{

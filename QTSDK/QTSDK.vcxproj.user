@@ -4,7 +4,7 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>-path C:\Users\cagef\projects\_testfiles\TC_Testing.mov -setTC -tc 00:57:30:00</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-path "\\10.0.20.175\rei08\DCI\testing\_Testfiles\Logan_8Ch.mov" -setTC -tc 00:57:30:00 -fps 23.98</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
