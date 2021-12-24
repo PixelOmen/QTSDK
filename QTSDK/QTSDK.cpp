@@ -70,6 +70,8 @@ void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, bool& 
     }
 }
 
+
+
 void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR)
 {
     Track videotrack = GetMovieIndTrackType(myMovie, 1, VideoMediaType, movieTrackMediaType);
