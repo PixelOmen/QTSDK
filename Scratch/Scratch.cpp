@@ -24,7 +24,7 @@ typedef map<string, string> commands;
 
 int main(int argc, char* argv[])
 {
-	double x = 23.9;
-	int y = round(x);
-	print(y);
+	double fps = 23;
+	fps++;
+	print(fps);
 }

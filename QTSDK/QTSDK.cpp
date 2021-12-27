@@ -72,7 +72,7 @@ void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, bool& 
 
 
 
-void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR)
+void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR, TimeCodeDef& myTCD)
 {
     Track videotrack = GetMovieIndTrackType(myMovie, 1, VideoMediaType, movieTrackMediaType);
     TimeValue myMovieDur = GetMovieDuration(myMovie);
@@ -80,14 +80,13 @@ void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR
 
     long mySize = sizeof(TimeCodeDescription);
     TimeCodeDescriptionHandle myDesc = (TimeCodeDescriptionHandle)NewHandleClear(mySize);
-    TimeCodeDef myTCDef{ 0, 24000, 1001, 24 };
     (**myDesc).descSize = mySize;
     (**myDesc).dataFormat = TimeCodeMediaType;
     (**myDesc).resvd1 = 0;
     (**myDesc).resvd2 = 0;
     (**myDesc).dataRefIndex = 1;
     (**myDesc).flags = 0;
-    (**myDesc).timeCodeDef = myTCDef;
+    (**myDesc).timeCodeDef = myTCD;
 
     Track oldTrack = GetMovieIndTrackType(myMovie, 1, TimeCodeMediaType, movieTrackMediaType);
     while (oldTrack != NULL) {
@@ -100,7 +99,7 @@ void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR
 
     long** framenum = (long**)NewHandle(sizeof(long));
     Handle frameH = (Handle)framenum;
-    HandlerError TCtoFrameErr = TCTimeCodeToFrameNumber(GetMediaHandler(newTCmedia), &myTCDef, &myTRR, *framenum);
+    HandlerError TCtoFrameErr = TCTimeCodeToFrameNumber(GetMediaHandler(newTCmedia), &myTCD, &myTRR, *framenum);
     **framenum = EndianS32_NtoB(**framenum);
 
     converterrors["BeginEdits"] = BeginMediaEdits(newTCmedia);
@@ -116,9 +115,6 @@ void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR
 int main(int argc, char* argv[])
 {
     argHandler args{ argc, argv };
-
-    print(args.fps);
-    exit(0);
 
     // Debug only, checks incoming arguments
     //for (auto i : args.getparams())
@@ -168,7 +164,7 @@ int main(int argc, char* argv[])
 
     if (vectortools::contains(args.tasks, string("setTC")))
     {
-		SetTC(myMovie, converterrors, args.TCR);
+		SetTC(myMovie, converterrors, args.TCR, args.TCD);
     }
 
     if (vectortools::contains(args.tasks, string("flagaudio")))

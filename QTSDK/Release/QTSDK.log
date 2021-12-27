@@ -1,9 +1,14 @@
 ﻿  QTSDK.cpp
   argHandler.cpp
+C:\Users\eacosta\Projects\cpp\QTSDK\QTSDK\argHandler.cpp(4,80): warning C4305: 'initializing': truncation from 'double' to '_Ty'
+          with
+          [
+              _Ty=float
+          ]
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  2 of 427 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    3 functions had inline decision re-evaluated but remain unchanged
+  79 of 483 functions (16.4%) were compiled, the rest were copied from previous compilation.
+    57 functions were new in current compilation
+    43 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   QTSDK.vcxproj -> C:\Users\eacosta\Projects\cpp\QTSDK\Release\QTSDK.exe

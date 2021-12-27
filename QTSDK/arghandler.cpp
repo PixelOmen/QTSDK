@@ -53,6 +53,23 @@ void argHandler::parseFPS()
 		cout << "Unsupported framerate: " << this->fps << endl;
 		exit(1);
 	}
+
+	double fpsint;
+	double fpsRemainder = modf(this->fps, &fpsint);
+
+	int divisor;
+	if (fpsRemainder == 0)
+	{
+		divisor = 1000;
+	}
+	else
+	{
+		divisor = 1001;
+		fpsint = fpsint + 1;
+	}
+
+	this->TCD = TimeCodeDef{ 0, ((UInt8)fpsint) * 1000, divisor, (UInt8)fpsint };
+
 }
 
 void argHandler::parsechannels()

@@ -57,6 +57,7 @@ public:
 	int numOfTracks;
 	string fileURL;
 	TimeCodeRecord TCR;
+	TimeCodeDef TCD;
 	float fps;
 
 	argHandler(int& argc, char* argv[]);
