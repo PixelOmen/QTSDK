@@ -6,6 +6,9 @@
 #include <map>
 #include <array>
 #include <cmath>
+
+#include "Disney.h"
+
 using namespace std;
 
 template<typename T>
@@ -22,9 +25,12 @@ bool contains(const vector<T>& vec, const T& item)
 
 typedef map<string, string> commands;
 
+void testfunc(int& x) {
+	x = 20;
+};
+
 int main(int argc, char* argv[])
 {
-	double fps = 23;
-	fps++;
-	print(fps);
+	int test = Disney::Disney24ChConfig.at(1);
+	print(test);
 }

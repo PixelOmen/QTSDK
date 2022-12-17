@@ -30,6 +30,9 @@
     <ClCompile Include="stringtools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="disney24.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CIncludes\AE.h">

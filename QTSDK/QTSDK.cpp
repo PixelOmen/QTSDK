@@ -22,35 +22,27 @@ Track* getTracks(Movie& movie, array<int, 2> range)
     return allTracks;
 }
 
-AudioChannelLayout* buildLayouts(int& num, bool& me6ch)
-{
+AudioChannelLayout* buildLayouts(int& totalChs, bool& me6ch) {
     AudioChannelLabel currentch;
-    AudioChannelLayout* totalLayouts = new AudioChannelLayout[num];
-    for (int i = 0; i < num; i++)
-    {
-        if (me6ch)
-        {
-            if (i % 2 == 0)
-            {
+    AudioChannelLayout* totalLayouts = new AudioChannelLayout[totalChs];
+    for (int i = 0; i < totalChs; i++) {
+        if (me6ch) {
+            if (i % 2 == 0) {
                 currentch = 1;
-            }
-            else
-            {
+            } else {
                 currentch = 2;
             }
+
             totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
                 NULL, 1, {currentch, NULL, NULL} };
-        }
-        else
-        {
-            if (i > 5)
-            {
+
+        } else {
+            if (i > 5) {
                 currentch = i + 32;
-            }
-            else
-            {
+            } else {
                 currentch = i + 1;
             }
+
             totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
                 NULL, 1, {currentch, NULL, NULL} };
         }
@@ -58,10 +50,28 @@ AudioChannelLayout* buildLayouts(int& num, bool& me6ch)
     return totalLayouts;
 }
 
-void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, bool& me6ch, errorDict& converterrors)
+AudioChannelLayout* disneyLayout(int& totalChs) {
+    AudioChannelLayout* totalLayouts = new AudioChannelLayout[totalChs];
+    AudioChannelLabel labelID;
+    for (int i = 1; i < totalChs + 1; i++) {
+        labelID = (UInt32)Disney::Disney24ChConfig.at(i);
+        totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
+            NULL, 1, {labelID, NULL, NULL} };
+    }
+    return totalLayouts;
+}
+
+void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, bool& me6ch, bool& disney24, errorDict& converterrors)
 {
     Track* workingTracks = getTracks(myMovie, channels);
-    AudioChannelLayout* layouts = buildLayouts(numberOfTracks, me6ch);
+
+    AudioChannelLayout* layouts;
+    if (disney24) {
+        layouts = disneyLayout(numberOfTracks);
+    } else {
+        layouts = buildLayouts(numberOfTracks, me6ch);
+    }
+
 
     for (int i = 0; i < numberOfTracks; i++)
     {
@@ -170,8 +180,9 @@ int main(int argc, char* argv[])
     if (vectortools::contains(args.tasks, string("flagaudio")))
     {
         bool me6ch = vectortools::contains(args.tasks, string("me6ch"));
+        bool disney24 = vectortools::contains(args.tasks, string("disney24"));
         {
-            FlagQT(myMovie, args.channelRange, args.numOfTracks, me6ch, converterrors);
+            FlagQT(myMovie, args.channelRange, args.numOfTracks, me6ch, disney24, converterrors);
         }
     }
 

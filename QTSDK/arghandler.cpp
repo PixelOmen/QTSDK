@@ -93,9 +93,9 @@ void argHandler::parsechannels()
 
 	this->numOfTracks = (this->channelRange.at(1) - this->channelRange.at(0)) + 1;
 
-	if (this->numOfTracks != 2 && this->numOfTracks != 6 && this->numOfTracks != 8)
+	if (this->numOfTracks != 2 && this->numOfTracks != 6 && this->numOfTracks != 8 && this->numOfTracks != 24)
 	{
-		print("Total number of tracks is not 2, 6, or 8");
+		print("Total number of tracks is not 2, 6, 8, or 24");
 		exit(1);
 	}
 }
@@ -108,6 +108,7 @@ void argHandler::parsecmds()
 	{
 		if (i[0] == '-')
 		{
+			// Removes '-'
 			cmd = i.substr(1, (i.size() - 1));
 
 			if (vectortools::contains(this->singlecmds, cmd))

@@ -8,13 +8,18 @@
 
 #include <QuickTimeComponents.h>
 #include <MacTypes.h>
+
 using namespace std;
 
 typedef map<string, OSErr> errorDict;
 typedef map<string, string> commands;
 
-namespace vectortools
-{
+template<typename T>
+void print(T toprint) {
+	std::cout << toprint << std::endl;
+}
+
+namespace vectortools {
 	template<typename T>
 	bool contains(const vector<T>& vec, const T& item)
 	{
@@ -28,21 +33,18 @@ namespace vectortools
 	}
 }
 
-namespace stringtools
-{
+namespace stringtools {
 	vector<string> split(const string& instring, const string& delim);
 }
 
-template<typename T>
-void print(T toprint)
-{
-    std::cout << toprint << std::endl;
+namespace Disney {
+	extern const map<int, int> Disney24ChConfig;
 }
 
-class argHandler
-{
+class argHandler {
 private:
-	const vector<string> singlecmds{ "flagaudio", "setTC", "me6ch"};
+	// these singlecmds will appear in the tasks attribute (string vector)
+	const vector<string> singlecmds{ "flagaudio", "setTC", "me6ch", "disney24"};
 	vector<string> all;
 	commands params;
 
