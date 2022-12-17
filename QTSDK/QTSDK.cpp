@@ -22,9 +22,8 @@ Track* getTracks(Movie& movie, array<int, 2> range)
     return allTracks;
 }
 
-AudioChannelLayout* buildLayouts(int& totalChs, bool& me6ch) {
+void buildLayouts(int& totalChs, AudioChannelLayout* layouts, bool& me6ch) {
     AudioChannelLabel currentch;
-    AudioChannelLayout* totalLayouts = new AudioChannelLayout[totalChs];
     for (int i = 0; i < totalChs; i++) {
         if (me6ch) {
             if (i % 2 == 0) {
@@ -33,7 +32,7 @@ AudioChannelLayout* buildLayouts(int& totalChs, bool& me6ch) {
                 currentch = 2;
             }
 
-            totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
+            layouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
                 NULL, 1, {currentch, NULL, NULL} };
 
         } else {
@@ -43,33 +42,30 @@ AudioChannelLayout* buildLayouts(int& totalChs, bool& me6ch) {
                 currentch = i + 1;
             }
 
-            totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
+            layouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
                 NULL, 1, {currentch, NULL, NULL} };
         }
     }
-    return totalLayouts;
 }
 
-AudioChannelLayout* disneyLayout(int& totalChs) {
-    AudioChannelLayout* totalLayouts = new AudioChannelLayout[totalChs];
+void disneyLayout(int& totalChs, AudioChannelLayout* layouts) {
     AudioChannelLabel labelID;
-    for (int i = 1; i < totalChs + 1; i++) {
-        labelID = (UInt32)Disney::Disney24ChConfig.at(i);
-        totalLayouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
+    for (UInt32 i = 1; i < (UInt32)totalChs; i++) {
+        labelID = Disney::Disney24ChConfig.at(i);
+        layouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
             NULL, 1, {labelID, NULL, NULL} };
     }
-    return totalLayouts;
 }
 
 void FlagQT(Movie& myMovie, array<int, 2>& channels, int& numberOfTracks, bool& me6ch, bool& disney24, errorDict& converterrors)
 {
     Track* workingTracks = getTracks(myMovie, channels);
 
-    AudioChannelLayout* layouts;
+    AudioChannelLayout* layouts = new AudioChannelLayout[numberOfTracks];
     if (disney24) {
-        layouts = disneyLayout(numberOfTracks);
+        disneyLayout(numberOfTracks, layouts);
     } else {
-        layouts = buildLayouts(numberOfTracks, me6ch);
+        buildLayouts(numberOfTracks, layouts, me6ch);
     }
 
 

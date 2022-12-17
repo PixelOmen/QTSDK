@@ -7,7 +7,7 @@ using namespace std;
 // Mono is 42
 
 namespace Disney {
-	const map<int, int> Disney24ChConfig{
+	const map<int, int> Disney24ChConfig {
 		{1,1},
 		{2,2},
 		{3,3},
