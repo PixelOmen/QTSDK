@@ -50,8 +50,8 @@ void buildLayouts(int& totalChs, AudioChannelLayout* layouts, bool& me6ch) {
 
 void disneyLayout(int& totalChs, AudioChannelLayout* layouts) {
     AudioChannelLabel labelID;
-    for (UInt32 i = 1; i < (UInt32)totalChs; i++) {
-        labelID = Disney::Disney24ChConfig.at(i);
+    for (UInt32 i = 0; i < (UInt32)totalChs; i++) {
+        labelID = Disney::Disney24ChConfig.at(i+1);
         layouts[i] = { kAudioChannelLayoutTag_UseChannelDescriptions,
             NULL, 1, {labelID, NULL, NULL} };
     }
