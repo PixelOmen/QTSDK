@@ -1,15 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <sstream>
-#include <vector>
 #include <map>
-#include <array>
-#include <cmath>
 
 #include "Disney.h"
-
-using namespace std;
 
 template<typename T>
 void print(T toprint)
@@ -18,12 +12,12 @@ void print(T toprint)
 }
 
 template<typename T>
-bool contains(const vector<T>& vec, const T& item)
+bool contains(const std::vector<T>& vec, const T& item)
 {
 	return (std::find(vec.begin(), vec.end(), item) != vec.end());
 }
 
-typedef map<string, string> commands;
+typedef std::map<std::string, std::string> commands;
 
 void testfunc(int& x) {
 	x = 20;
@@ -31,6 +25,7 @@ void testfunc(int& x) {
 
 int main(int argc, char* argv[])
 {
-	int test = Disney::Disney24ChConfig.at(1);
+	int test = Disney::Disney24ChConfig.at(8);
+	// int test = headerfunc(10);
 	print(test);
 }
