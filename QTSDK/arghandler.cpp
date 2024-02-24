@@ -1,4 +1,5 @@
 #include "general.h"
+#include <math.h>
 using namespace std;
 
 const vector<float> SUPPORTED_FPS{ 24, 23.98, 23.976, 25, 30, 29.97, 60, 59.94 };

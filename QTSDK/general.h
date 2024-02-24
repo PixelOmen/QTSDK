@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <stdio.h>
+#include <algorithm>
 
 #include <QuickTimeComponents.h>
 #include <MacTypes.h>
