@@ -23,15 +23,3 @@ target_link_libraries(QTSDKEXEC ${CMAKE_CURRENT_SOURCE_DIR}/QTSDK/Libraries/CVCl
 target_link_libraries(QTSDKEXEC ${CMAKE_CURRENT_SOURCE_DIR}/QTSDK/Libraries/QTMLClient.lib)
 target_link_libraries(QTSDKEXEC ${CMAKE_CURRENT_SOURCE_DIR}/QTSDK/Libraries/QTSClient.lib)
 target_link_libraries(QTSDKEXEC ${CMAKE_CURRENT_SOURCE_DIR}/QTSDK/Libraries/QTVR.lib)
-
-
-project(scratch)
-
-file(GLOB_RECURSE scratch_sources
-"scratch/*.cpp"
-"scratch/*.c"
-)
-
-add_executable(scratchexec ${scratch_sources})
-target_include_directories(scratchexec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/scratch)
-target_include_directories(scratchexec PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/scratch/includes)

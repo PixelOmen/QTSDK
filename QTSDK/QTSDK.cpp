@@ -121,22 +121,6 @@ void SetTC(const Movie& myMovie, errorDict& converterrors, TimeCodeRecord& myTRR
 int main(int argc, char* argv[])
 {
     argHandler args{ argc, argv };
-
-    // Debug only, checks incoming arguments
-    //for (auto i : args.getparams())
-    //{
-    //    cout << i.first << " with " << i.second << "\n";
-    //}
-
-    //if (!args.tasks.empty())
-    //{
-    //    for (auto i : args.tasks)
-    //    {
-    //        cout << "Task: " << i << "\n";
-    //    }
-    //}
-    // end of Debug only
-
     errorDict initerrors{};
     initQT(&initerrors);
 
